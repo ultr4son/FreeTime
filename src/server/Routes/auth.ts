@@ -79,6 +79,7 @@ export class GoogleAuth {
                 res.redirect("/")
             } else {
                 console.log(err)
+                res.redirect("/")
             }
         });
 

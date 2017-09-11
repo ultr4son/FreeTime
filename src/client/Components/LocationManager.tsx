@@ -30,7 +30,7 @@ export class LocationManager extends React.Component<LocationManagerProps, Locat
     }
     render() {
         if(this.state.geolocationAllowed) {
-            return <Spinner/>
+            return <div style = {{margin:"auto"}}> <Spinner/> </div>
         } else {
             return <MapDropdown onConfirm = {this.props.onLocationGet} />
         }

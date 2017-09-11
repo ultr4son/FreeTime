@@ -27,9 +27,11 @@ class App extends React.Component<{}, AppState>
     render() {
 
         return (
-            <div className="rowList">
-                <Logo />
-                <EventVeiw />
+            <div>
+                <div style = {{display:"flex", flexDirection:"column"}}>
+                    <Logo />
+                    <EventVeiw />
+                </div>
             </div>
         )
     }

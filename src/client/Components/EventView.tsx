@@ -155,33 +155,33 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
         if (!this.state.location) {
             eventsVeiw = <LocationManager onLocationGet={this.onPlaceChange} />
         } else {
-            eventsVeiw = <div>
+            eventsVeiw = 
                 <EventList addableItems={this.state.authenticated} events={this.state.events} onAddClick={this.onAdd} onItemClick={this.onEventListItemClick} selectedItem={this.state.selectedEvent} />
-                 <button className = "pt-button" onClick = {this.onChangeLocationClick}>Change Location</button> 
-                 </div>
+                 
         }
 
         var yourEventsVeiw;
         if(this.state.authenticated) {
-            yourEventsVeiw = <div> 
+            yourEventsVeiw = 
                 <CalendarManager events={this.state.userEvents} toAdd={this.state.events[this.state.selectedEvent]} loading={this.state.loading} /> 
-                <button className = "pt-button" onClick = {this.onLogoutClick}>Logout</button>
-                </div>
         } else {
             yourEventsVeiw = <CalendarPicker options={Object.keys(this.redirect)} onOptionClick={this.onPickerOptionClick} />
         }
 
         return (
-            <div className="eventVeiw" style={{margin:"0 auto"}}>
+            <div className="eventVeiw" style = {{margin:"auto"}}>
                 <div className="pt-card flexUiElement primaryUiElement">
                     <h4>Events</h4>
                     <hr />
                     {eventsVeiw}
+                    {this.state.location && <button className = "pt-button" onClick = {this.onChangeLocationClick}>Change Location</button>}
+
                 </div>
                 <div className="pt-card flexUiElement primaryUiElement">
                     <h4>Your Events</h4>
                     <hr />
                     {yourEventsVeiw}
+                    {this.state.authenticated && <button className = "pt-button" onClick = {this.onLogoutClick}>Logout</button>}
                 </div>
             </div>
         )

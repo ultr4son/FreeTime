@@ -157,7 +157,7 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
             eventsVeiw = <LocationManager onLocationGet={this.onPlaceChange} />
         } else {
             if (this.state.eventsLoading) {
-                eventsVeiw =  <div style = {{display:"table", margin:"auto"}}><blueprint.Spinner /></div>
+                eventsVeiw = <div style={{ display: "table", margin: "auto" }}><blueprint.Spinner /></div>
             } else {
                 eventsVeiw = <EventList addableItems={this.state.authenticated} events={this.state.events} onAddClick={this.onAdd} onItemClick={this.onEventListItemClick} selectedItem={this.state.selectedEvent} />
             }
@@ -167,7 +167,7 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
         var userEventsVeiw;
         if (this.state.authenticated) {
             if (this.state.userEventsLoading) {
-                userEventsVeiw = <div style = {{display:"table", margin:"auto"}}><blueprint.Spinner /></div>
+                userEventsVeiw = <div style={{ display: "table", margin: "auto" }}><blueprint.Spinner /></div>
             } else {
                 userEventsVeiw = <CalendarManager events={this.state.userEvents} toAdd={this.state.events[this.state.selectedEvent]} />
             }
@@ -182,14 +182,14 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
                     <h4>Events</h4>
                     <hr />
                     {eventsVeiw}
-                    {this.state.location && <button className="pt-button" onClick={this.onChangeLocationClick}>Change Location</button>}
+                    {this.state.location && !this.state.eventsLoading &&<button className="pt-button" onClick={this.onChangeLocationClick}>Change Location</button>}
 
                 </div>
                 <div className="pt-card flexUiElement primaryUiElement">
                     <h4>Your Events</h4>
                     <hr />
                     {userEventsVeiw}
-                    {this.state.authenticated && <button className="pt-button" onClick={this.onLogoutClick}>Logout</button>}
+                    {this.state.authenticated && !this.state.userEventsLoading && <button className="pt-button" onClick={this.onLogoutClick}>Logout</button>}
                 </div>
             </div>
         )

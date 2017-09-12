@@ -1,12 +1,10 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom"
+import { AppPage } from "./Components/AppPage"
 import { EventVeiw } from "./Components/EventView"
-import { Logo } from "./Components/Logo"
 require('./public/index.html');
 require('./public/index.css')
 require('./public/favicon.ico')
-require('./public/logo-big.svg')
-require('./public/logo.svg')
 require('./public/memphis-colorful.png')
 require('../../node_modules/@blueprintjs/core/dist/blueprint.css')
 require('../../node_modules/normalize.css/normalize.css')
@@ -28,9 +26,10 @@ class App extends React.Component<{}, AppState>
 
         return (
             <div>
-                <div style = {{display:"flex", flexDirection:"column"}}>
-                    <Logo />
-                    <EventVeiw />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <AppPage>
+                        <EventVeiw />
+                    </AppPage>
                 </div>
             </div>
         )

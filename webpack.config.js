@@ -1,7 +1,10 @@
 module.exports = {
-    entry: "./src/client/index.tsx",
+    entry: { 
+        index: "./src/client/index.tsx",
+        about: "./src/client/about.tsx"
+    },
     output: {
-        filename: "bundle.js",
+		filename: "[name].bundle.js",
         path: __dirname + "/dist/client/public"
     },
 

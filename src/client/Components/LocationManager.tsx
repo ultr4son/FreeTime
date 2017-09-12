@@ -1,6 +1,5 @@
 import * as React from "react"
 import { MapDropdown } from "./MapDropdown"
-import {Spinner} from "@blueprintjs/core"
 
 export interface LocationManagerProps {
     onLocationGet: (location: {latitude:string, longitude:string}) => void
@@ -30,7 +29,7 @@ export class LocationManager extends React.Component<LocationManagerProps, Locat
     }
     render() {
         if(this.state.geolocationAllowed) {
-            return <div style = {{margin:"auto"}}> <Spinner/> </div>
+            return false;
         } else {
             return <MapDropdown onConfirm = {this.props.onLocationGet} />
         }

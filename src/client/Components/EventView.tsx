@@ -13,8 +13,9 @@ export interface EventVeiwState {
     userEvents: Event[]
     selectedEvent: number
     authenticated: boolean
-    loading: boolean
-    location: {latitude:string, longitude:string}
+    userEventsLoading: boolean
+    eventsLoading: boolean
+    location: { latitude: string, longitude: string }
 }
 
 export interface EventVeiwProps {
@@ -29,7 +30,7 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
 
     constructor(props: EventVeiwProps) {
         super(props);
-        this.state = { location: null, loading: true, events: [], userEvents: [], selectedEvent: null, authenticated: false }
+        this.state = { location: null, userEventsLoading: true, eventsLoading: true, events: [], userEvents: [], selectedEvent: null, authenticated: false }
     }
     _strToDate = (events: Event[]) => {
         return events.map(e => {
@@ -65,7 +66,7 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
             .then(response => JSON.parse(response))
             .then(this._strToDate)
             .then(events => {
-                this.setState({ userEvents: events, loading: false })
+                this.setState({ userEvents: events, userEventsLoading: false })
                 this.filterEvents();
             })
 
@@ -81,13 +82,13 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
         this.setState({ events: filteredEvents })
     }
 
-    getEvents(place: {latitude:string, longitude:string}) {
+    getEvents(place: { latitude: string, longitude: string }) {
 
         return request(location.origin + "/api/events/list", { qs: { lat: place.latitude, long: place.longitude, from: new Date() } })
             .then(response => JSON.parse(response))
             .then(this._strToDate)
             .then(events => {
-                this.setState({ events: events });
+                this.setState({ events: events, eventsLoading: false });
             })
             .catch(() => {
 
@@ -95,15 +96,15 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
     }
 
     onAdd = (index: number) => {
-        var addedEvent:Event = this.state.events[index];
+        var addedEvent: Event = this.state.events[index];
         var toaster = blueprint.Toaster.create({
             position: blueprint.Position.TOP
         });
-        var toSend:any = {
+        var toSend: any = {
             cost: addedEvent.cost,
             description: addedEvent.description,
             endDate: addedEvent.endDate.getTime(),
-            startDate:addedEvent.startDate.getTime(),
+            startDate: addedEvent.startDate.getTime(),
             location: addedEvent.location,
             title: addedEvent.title,
             url: addedEvent.url
@@ -133,21 +134,21 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
         }
     }
 
-    onPlaceChange = (place: {latitude:string, longitude:string}) => {
+    onPlaceChange = (place: { latitude: string, longitude: string }) => {
         this.getEvents(place)
             .then(() => this.setState({ location: place }))
 
     }
 
     onChangeLocationClick = () => {
-        this.setState({location: null})
+        this.setState({ location: null })
     }
 
     onLogoutClick = () => {
-        request(location.origin + "/auth/logout", {method: "POST"})
-        .finally(() => {
-            this.setState({authenticated: false})
-        })
+        request(location.origin + "/auth/logout", { method: "POST" })
+            .finally(() => {
+                this.setState({ authenticated: false })
+            })
     }
 
     render() {
@@ -155,33 +156,40 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
         if (!this.state.location) {
             eventsVeiw = <LocationManager onLocationGet={this.onPlaceChange} />
         } else {
-            eventsVeiw = 
-                <EventList addableItems={this.state.authenticated} events={this.state.events} onAddClick={this.onAdd} onItemClick={this.onEventListItemClick} selectedItem={this.state.selectedEvent} />
-                 
+            if (this.state.eventsLoading) {
+                eventsVeiw =  <div style = {{display:"table", margin:"auto"}}><blueprint.Spinner /></div>
+            } else {
+                eventsVeiw = <EventList addableItems={this.state.authenticated} events={this.state.events} onAddClick={this.onAdd} onItemClick={this.onEventListItemClick} selectedItem={this.state.selectedEvent} />
+            }
         }
 
-        var yourEventsVeiw;
-        if(this.state.authenticated) {
-            yourEventsVeiw = 
-                <CalendarManager events={this.state.userEvents} toAdd={this.state.events[this.state.selectedEvent]} loading={this.state.loading} /> 
+
+        var userEventsVeiw;
+        if (this.state.authenticated) {
+            if (this.state.userEventsLoading) {
+                userEventsVeiw = <div style = {{display:"table", margin:"auto"}}><blueprint.Spinner /></div>
+            } else {
+                userEventsVeiw = <CalendarManager events={this.state.userEvents} toAdd={this.state.events[this.state.selectedEvent]} />
+            }
+
         } else {
-            yourEventsVeiw = <CalendarPicker options={Object.keys(this.redirect)} onOptionClick={this.onPickerOptionClick} />
+            userEventsVeiw = <CalendarPicker options={Object.keys(this.redirect)} onOptionClick={this.onPickerOptionClick} />
         }
 
         return (
-            <div className="eventVeiw" style = {{margin:"auto"}}>
+            <div className="eventVeiw" style={{ margin: "auto" }}>
                 <div className="pt-card flexUiElement primaryUiElement">
                     <h4>Events</h4>
                     <hr />
                     {eventsVeiw}
-                    {this.state.location && <button className = "pt-button" onClick = {this.onChangeLocationClick}>Change Location</button>}
+                    {this.state.location && <button className="pt-button" onClick={this.onChangeLocationClick}>Change Location</button>}
 
                 </div>
                 <div className="pt-card flexUiElement primaryUiElement">
                     <h4>Your Events</h4>
                     <hr />
-                    {yourEventsVeiw}
-                    {this.state.authenticated && <button className = "pt-button" onClick = {this.onLogoutClick}>Logout</button>}
+                    {userEventsVeiw}
+                    {this.state.authenticated && <button className="pt-button" onClick={this.onLogoutClick}>Logout</button>}
                 </div>
             </div>
         )

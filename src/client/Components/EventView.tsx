@@ -24,6 +24,7 @@ export interface EventVeiwProps {
 
 export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
 {
+    readonly topToaster = new blueprint.Toaster({position: blueprint.Position.TOP})
     readonly redirect: { [name: string]: string } = {
         "Google": "/auth/google"
     }
@@ -51,7 +52,13 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
                     this.getUserEvents();
                 }
                 this.setState({ authenticated: authenticated })
-            });
+            })
+            .catch(() => {
+                this.topToaster.show({
+                    intent: blueprint.Intent.DANGER,
+                    message: "Could not authenticate."
+                })
+            })
     }
 
     intersects(a: Event, b: Event) {
@@ -62,12 +69,18 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
 
     getUserEvents() {
         var qs: any = { from: new Date().getTime() }
-        request(location.origin + "/api/user/events/list", { qs: qs })
+        return request(location.origin + "/api/user/events/list", { qs: qs })
             .then(response => JSON.parse(response))
             .then(this._strToDate)
             .then(events => {
                 this.setState({ userEvents: events, userEventsLoading: false })
                 this.filterEvents();
+            })
+            .catch(() => {
+                this.topToaster.show({
+                    intent: blueprint.Intent.DANGER,
+                    message: "Could not get user's events."
+                })
             })
 
     }
@@ -91,15 +104,16 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
                 this.setState({ events: events, eventsLoading: false });
             })
             .catch(() => {
-
+                this.topToaster.show({
+                    intent:blueprint.Intent.DANGER,
+                    message: "Could not get events."
+                })
+    
             })
     }
 
     onAdd = (index: number) => {
         var addedEvent: Event = this.state.events[index];
-        var toaster = blueprint.Toaster.create({
-            position: blueprint.Position.TOP
-        });
         var toSend: any = {
             cost: addedEvent.cost,
             description: addedEvent.description,
@@ -111,18 +125,39 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
         }
         request(location.origin + "/api/user/events", { method: "POST", body: toSend, json: true })
             .then(() => {
-                toaster.show({
+                this.topToaster.show({
                     intent: blueprint.Intent.SUCCESS,
                     message: "Event added!"
                 })
                 this.getUserEvents()
             })
             .catch(() => {
-                toaster.show({
+                this.topToaster.show({
                     intent: blueprint.Intent.DANGER,
                     message: "Could not add event."
                 })
             })
+    }
+
+    onRemove = (index:number) => {
+        var event = this.state.userEvents[index];
+        let fail = () => {
+            this.topToaster.show({
+                intent:blueprint.Intent.DANGER,
+                message: "Could not remove event."
+            })
+        }
+        if(event.id) {
+            request(location.origin + "/api/user/events/remove", {method: "POST", body: {id: event.id}, json: true})
+            .then(() => {
+                this.topToaster.show({
+                    intent: blueprint.Intent.SUCCESS,
+                    message: "Removed event."
+                })
+            }).catch(fail)
+        } else {
+            fail();
+        }
     }
 
     onEventListItemClick = (index: number) => {
@@ -159,7 +194,7 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
             if (this.state.eventsLoading) {
                 eventsVeiw = <div style={{ display: "table", margin: "auto" }}><blueprint.Spinner /></div>
             } else {
-                eventsVeiw = <EventList addableItems={this.state.authenticated} events={this.state.events} onAddClick={this.onAdd} onItemClick={this.onEventListItemClick} selectedItem={this.state.selectedEvent} />
+                eventsVeiw = <EventList addableItems = {this.state.authenticated} events={this.state.events} onAddClick={this.onAdd} onItemClick={this.onEventListItemClick} selectedItem={this.state.selectedEvent} />
             }
         }
 
@@ -169,7 +204,7 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
             if (this.state.userEventsLoading) {
                 userEventsVeiw = <div style={{ display: "table", margin: "auto" }}><blueprint.Spinner /></div>
             } else {
-                userEventsVeiw = <CalendarManager events={this.state.userEvents} toAdd={this.state.events[this.state.selectedEvent]} />
+                userEventsVeiw = <CalendarManager onRemove = {this.onRemove} events={this.state.userEvents} toAdd={this.state.events[this.state.selectedEvent]} />
             }
 
         } else {
@@ -177,19 +212,19 @@ export class EventVeiw extends React.Component<EventVeiwProps, EventVeiwState>
         }
 
         return (
-            <div className="eventVeiw" style={{ margin: "auto" }}>
+            <div className="eventVeiw" style={{ margin: "auto", width:"80%" }}>
                 <div className="pt-card flexUiElement primaryUiElement">
                     <h4>Events</h4>
                     <hr />
                     {eventsVeiw}
-                    {this.state.location && !this.state.eventsLoading &&<button className="pt-button" onClick={this.onChangeLocationClick}>Change Location</button>}
+                    {this.state.location && !this.state.eventsLoading &&<button className="pt-button" style={{margin: "10px"}} onClick={this.onChangeLocationClick}>Change Location</button>}
 
                 </div>
                 <div className="pt-card flexUiElement primaryUiElement">
                     <h4>Your Events</h4>
                     <hr />
                     {userEventsVeiw}
-                    {this.state.authenticated && !this.state.userEventsLoading && <button className="pt-button" onClick={this.onLogoutClick}>Logout</button>}
+                    {this.state.authenticated && !this.state.userEventsLoading && <button className="pt-button" style={{margin: "10px"}} onClick={this.onLogoutClick}>Logout</button>}
                 </div>
             </div>
         )

@@ -7,7 +7,9 @@ export interface EventDetailsProps
     event:Event
     index:number
     showAddButton:boolean
+    showRemoveButton?:boolean
     onAddClick:(e:React.SyntheticEvent<HTMLButtonElement>) => void
+    onRemoveClick?:(e:React.SyntheticEvent<HTMLButtonElement>) => void
 }
 export function EventDetails(props:EventDetailsProps)
 {
@@ -18,6 +20,7 @@ export function EventDetails(props:EventDetailsProps)
             {props.event.url && <div className = "pt-card eventListItem"><a href = {props.event.url}>{props.event.url}</a></div>}
             <Slideshow/>
             {props.showAddButton && <button onClick = {props.onAddClick} type = "button" className = "pt-button pt-fill pt-intent-primary">Add</button>}
+            {props.showRemoveButton && <button onClick = {props.onRemoveClick || (() => {})} type="button" className = "pt-button pt-fill pt-intent-primary">Remove</button>}
         </div>
     )
 }

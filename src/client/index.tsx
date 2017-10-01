@@ -6,11 +6,10 @@ require('./public/index.html');
 require('./public/index.css')
 require('./public/favicon.ico')
 require('./public/memphis-colorful.png')
-require('../../node_modules/@blueprintjs/core/dist/blueprint.css')
-require('../../node_modules/normalize.css/normalize.css')
-require('../../node_modules/@blueprintjs/core/resources/icons/icons-16.ttf')
-require('../../node_modules/@blueprintjs/core/resources/icons/icons-16.woff')
-
+require('./public/blueprint.css')
+require('./public/normalize.css')
+require("./public/resources/icons/icons-16.ttf")
+require("./public/resources/icons/icons-16.woff")
 
 
 interface AppState {

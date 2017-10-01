@@ -18,9 +18,10 @@ for (var i = 0; i < 24; i++) {
         startDate: startDate,
         location: "Here",
         title: "Cool event " + i,
-        url: "www.wow.com"
+        url: "www.wow.com",
+        id: ""
     }
     testEvents.push(event);
 }
 
-export let userEventManager = getDummyManager(testEvents)
+export let eventManager = getDummyManager(testEvents)

@@ -30,7 +30,8 @@ app.use(morgan("combined"))
 googleAuth.init().then(() => {
     app.get("/api/user/events/list", api.getUserEvents);    
     app.post("/api/user/events", api.postUserEvent);
-    app.get("/api/events/list", api.getLocalEvents);
+    app.post("/api/user/events/remove", api.postRemoveEvents);
+    app.get("/api/events/list", api.getEvents);
  
     app.get("/auth/google", googleAuth.authUser);
     app.get("/auth/authenticated", authenticated)

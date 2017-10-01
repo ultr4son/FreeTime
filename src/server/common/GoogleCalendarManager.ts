@@ -140,13 +140,14 @@ function getEvents(authClient: any) {
                         reject(err);
                     }
                     else {
-                        var events = response.items.map((event: any) => {
+                        var events = response.items.map((event: GoogleEvent) => {
                             return {
                                 startDate: event.start.dateTime,
                                 endDate: event.end.dateTime,
                                 location: event.location,
                                 title: event.summary,
                                 description: event.description,
+                                id: event.id
                             }
                         });
                         resolve(events);
@@ -183,8 +184,26 @@ function putEvent(authClient: any) {
                     reject(err)
                 }
                 else {
-                    console.log(JSON.stringify(evt))
                     resolve(evt)
+                }
+            })
+        })
+    }
+}
+
+function removeEvent(authClient: any) {
+    return (id:string) => {
+        console.log(id)
+        return new Promise<any>((resolve, reject) => {
+            calendar.events.delete({
+                auth: authClient,
+                calendarId: 'primary',
+                eventId: id 
+            }, (err:any, evt:any) => {
+                if(err) {
+                    reject(err);
+                } else {
+                    resolve(evt);
                 }
             })
         })
@@ -194,6 +213,7 @@ function putEvent(authClient: any) {
 export function googleCalendar(authClient: any): CalendarInit {
     return Promise.resolve({
         putEvent: putEvent(authClient),
-        getEvents: getEvents(authClient)
+        getEvents: getEvents(authClient),
+        removeEvent: removeEvent(authClient)
     });
 }

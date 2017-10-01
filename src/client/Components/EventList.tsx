@@ -9,8 +9,10 @@ export interface EventListProps {
     events: Event[];
     selectedItem: number
     onAddClick: (index: number) => void;
+    onRemoveClick?: (index:number) => void;
     onItemClick: (index: number) => void;
     addableItems: boolean
+    removableItems?:boolean
     createItem?: (props: EventListProps) => (e: Event, i: number) => JSX.Element
 }
 export function EventList(props: EventListProps) {
@@ -23,7 +25,9 @@ export function EventList(props: EventListProps) {
                 index={i}
                 open={i == props.selectedItem}
                 addable={props.addableItems}
+                removable={props.removableItems}
                 style={{ "background-color": Colors.LIGHT_GRAY5 }}
+
             />
             <hr />
         </div>
@@ -45,6 +49,8 @@ export interface EventListItemProps {
     index: number
     open: boolean
     addable: boolean
+    removable?: boolean
+    onRemoveClick?: (index:number) => void
     style?: {}
     onAddClick: (index: number) => void;
     onItemClick: (index: number) => void
@@ -75,7 +81,7 @@ export class EventListItem extends React.Component<EventListItemProps, EventList
                 <div className="pt-ui-text-large">{this.props.event.title}</div>
                 <div className="pt-ui-text">{Util.dateSpanToString(this.props.event.startDate, this.props.event.endDate)}</div>
                 <Collapse isOpen={this.props.open}>
-                    <EventDetails showAddButton={this.props.addable} event={this.props.event} index={this.props.index} onAddClick={this.handleClick(this.props.onAddClick)} />
+                    <EventDetails onRemoveClick = {this.handleClick(this.props.onRemoveClick)} showRemoveButton = {this.props.removable} showAddButton={this.props.addable} event={this.props.event} index={this.props.index} onAddClick={this.handleClick(this.props.onAddClick)} />
                 </Collapse>
             </div>)
     }

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Logo, Footer } from "./Logo"
+import { Footer, Header } from "./Logo"
 
 export interface AppPageProps {
 }
@@ -8,7 +8,7 @@ export class AppPage extends React.PureComponent {
         return (
             <div>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                    <Logo />
+                    <Header/>
                     {this.props.children}
                     <Footer />
                 </div>

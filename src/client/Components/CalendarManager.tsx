@@ -7,6 +7,7 @@ import { Colors } from "@blueprintjs/core"
 export interface CalendarManagerProps {
     toAdd: Event
     events: Event[]
+    onRemove: (index:number) => void
 }
 export interface CalendarManagerState {
     selected: number
@@ -29,10 +30,25 @@ export class CalendarManager extends React.Component<CalendarManagerProps, Calen
         }
     }
 
-
     render() {
         var totalEvents = this.props.events;
-        var create;
+        var create =(props: EventListProps) => (e: Event, i: number): JSX.Element => {
+            var style: any = { "background-color": Colors.LIGHT_GRAY5 }
+            return <div>
+                <EventListItem
+                    event={e}
+                    onAddClick={props.onAddClick}
+                    onItemClick={props.onItemClick}
+                    onRemoveClick = {props.onRemoveClick}
+                    index={i}
+                    open={i == props.selectedItem}
+                    addable={props.addableItems}
+                    style={style}
+                    removable = {true}
+                />
+                <hr />
+            </div>
+        } ;
         if (this.props.toAdd) {
             totalEvents = this.props.events.concat([this.props.toAdd]).sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
             var addIndex = totalEvents.findIndex(v => v.startDate == this.props.toAdd.startDate && v.endDate == this.props.toAdd.endDate);
@@ -53,11 +69,13 @@ export class CalendarManager extends React.Component<CalendarManagerProps, Calen
                         open={i == props.selectedItem}
                         addable={props.addableItems}
                         style={style}
+                        removable = {i != addIndex}
+                        onRemoveClick = {props.onRemoveClick}
                     />
                     <hr />
                 </div>
             }
         }
-        return <EventList addableItems={false} events={totalEvents} onAddClick={() => { }} onItemClick={this.onEventListItemClick} selectedItem={this.state.selected} createItem={create} />
+        return <EventList onRemoveClick = {this.props.onRemove} addableItems={false} events={totalEvents} onAddClick={() => { }} onItemClick={this.onEventListItemClick} selectedItem={this.state.selected} createItem={create} />
     }
 }

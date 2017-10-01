@@ -5,7 +5,7 @@ module.exports = {
     },
     output: {
 		filename: "[name].bundle.js",
-        path: __dirname + "/dist/client/public"
+        path: __dirname + "/dist/client/public",
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -24,7 +24,10 @@ module.exports = {
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
 
-            { test: /(\.html|\.css|\.svg|\.ico|\.ttf|\.woff|\.png)/, loader: "file-loader", options: {name: "[name].[ext]"} }
+            { test: /(\.html|\.css|\.svg|\.ico|\.ttf|\.woff|\.png)/, loader: "file-loader", options: {
+                name: "[path][name].[ext]",
+                context: "./src/client/public",
+            } }
 
 
         ]

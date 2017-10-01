@@ -27,7 +27,7 @@ export class CalendarPicker extends React.Component<CalendarPickerProps, {}>
         
         const style =
         {
-            "justify-content":"center"
+//            "justify-content":"center"
         }
         return (
             <div className = "rowList eventList" style = {style}>

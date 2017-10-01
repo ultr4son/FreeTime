@@ -15,6 +15,10 @@ function AboutBody() {
             <div className="pt-text">
                 My name is Tristan Thompson, and I am a college sophomore at <a href = "http://oregonstate.edu">OSU</a>. I am very excited about programming and fill my spare time with projects like this one.
             </div>
+            <h2>Contact me</h2>
+            <div className="pt-text">
+                Comments? Bugs? Questions? Email me here: tristan.thompson.work@gmail.com
+            </div>
         </div>
     )
 }

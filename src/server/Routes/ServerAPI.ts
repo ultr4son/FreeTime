@@ -64,7 +64,7 @@ export function getUserEvents(req: Request, res: Response) {
     }
 }
 
-export function getLocalEvents(req: Request, res: Response) {
+export function getEvents(req: Request, res: Response) {
     let lat = req.query.lat;
     let long = req.query.long;
 
@@ -79,14 +79,35 @@ export function getLocalEvents(req: Request, res: Response) {
     if (to) {
         toDate = strToDate(to);
     }
-    Settings.userEventManager
+    Settings.eventManager
         .then(manager => {
             manager.getEvents(lat, long, fromDate, toDate)
                 .then(events => res.send(events))
+                .catch(err => {
+                    console.log(err);
+                    res.sendStatus(500);
+                });
         })
         .catch(err => {
             console.log(err)
             res.sendStatus(500)
         })
 
+}
+
+export function postRemoveEvents(req:Request, res: Response) {
+    let id = req.body.id;
+
+    if(req.sessionID && State.sessions[req.sessionID]) {
+        State.sessions[req.sessionID]
+        .removeEvent(id)
+        .then(() => res.sendStatus(200))
+        .catch(err => {
+            console.log(err);
+            res.sendStatus(500);
+        });
+
+    } else {
+        res.sendStatus(401);
+    }
 }

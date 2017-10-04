@@ -38,7 +38,7 @@ googleAuth.init().then(() => {
     app.get("/loginCallback", googleAuth.loginCallback);
     app.post("/auth/logout", logout);
 
-    app.listen(Settings.PORT, () =>
+    app.listen(process.env.PORT || Settings.PORT, () =>
     {
         console.log("Listening on " + Settings.PORT)
     });

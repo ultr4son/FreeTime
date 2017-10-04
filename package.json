@@ -7,7 +7,8 @@
     "test": "test",
     "build": "tsc && webpack",
     "start": "node dist/server/index.js",
-    "watch": "gulp watch && node dist/server/index.js"
+    "watch": "gulp watch && node dist/server/index.js",
+    "postinstall": "npm run build"
   },
   "author": "Tristan Thompson",
   "license": "ISC",
@@ -65,5 +66,5 @@
     "unique-stream": "^2.2.1",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
-  }
+  },
 }

@@ -1,1 +1,1 @@
-web: deploy.cmd
+web: npm run start

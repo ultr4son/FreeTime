@@ -2,13 +2,10 @@ var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 
 import { Request, Response } from "express"
-import * as fs from "fs"
-import * as Promise from "bluebird";
 
 import * as State from "../State"
 import * as calendar from "../common/GoogleCalendarManager"
 
-var readFile = Promise.promisify(fs.readFile);
 
 
 export function authenticated(req:Request, res:Response) {
@@ -35,15 +32,22 @@ export class GoogleAuth {
        
     }
     public init() {
-        return readFile("client_secret.json")
-        .then(file => JSON.parse(file.toString()))
-        .then(clientSecret => {
-            this.oauth2Client = new OAuth2(
-                clientSecret.web.client_id,
-                clientSecret.web.client_secret,
-                "http://localhost:3000/loginCallback"
-            );
-        })
+        // return readFile("client_secret.json")
+        // .then(file => JSON.parse(file.toString()))
+        // .then(clientSecret => {
+            
+        //     this.oauth2Client = new OAuth2(
+        //         //clientSecret.web.client_id,
+        //         //clientSecret.web.client_secret,
+        //         "http://localhost:3000/loginCallback"
+        //     );
+        // })
+        this.oauth2Client = new OAuth2(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
+            "http://localhost:3000/loginCallback"
+        )
+
     }
     public readonly authUser = (req: Request, res: Response) => {
         // generate a url that asks permissions for Google Calendar scope

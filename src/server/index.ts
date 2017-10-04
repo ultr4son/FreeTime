@@ -5,7 +5,8 @@ import * as morgan from "morgan"
 import * as expressSession from "express-session"
 import * as bodyParser from "body-parser"
 import * as api from "./Routes/ServerAPI"
-
+//import * as FileStore from "session-file-store"
+var FileStore = require("session-file-store")(expressSession);
 
 var app = express();
 
@@ -15,7 +16,8 @@ var googleAuth = new GoogleAuth();
 app.use(expressSession({
     resave: true,
     saveUninitialized: true,
-    secret: "sntaoehstneoambrjblrc,a.buircloeaburceoabjlcroeabilrscao"
+    secret: "sntaoehstneoambrjblrc,a.buircloeaburceoabjlcroeabilrscao",
+    store: new FileStore
 })
 )
 
@@ -40,7 +42,7 @@ googleAuth.init().then(() => {
 
     app.listen(process.env.PORT || Settings.PORT, () =>
     {
-        console.log("Listening on " + Settings.PORT)
+        console.log("Listening on " + process.env.PORT || Settings.PORT)
     });
 
 });

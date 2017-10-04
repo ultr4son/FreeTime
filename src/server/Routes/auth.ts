@@ -45,7 +45,7 @@ export class GoogleAuth {
         this.oauth2Client = new OAuth2(
             process.env.GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
-            "https://frozen-chamber-98996.herokuapp.com/loginCallback"
+            process.env.GOOGLE_CALLBACK
         );
         return Promise.resolve();
 

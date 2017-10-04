@@ -1,5 +1,4 @@
 @echo off
-echo Deploying files...
-npm install
+echo starting...
 npm run build
 npm run start

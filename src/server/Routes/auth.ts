@@ -46,7 +46,8 @@ export class GoogleAuth {
             process.env.GOOGLE_CLIENT_ID,
             process.env.GOOGLE_CLIENT_SECRET,
             "http://localhost:3000/loginCallback"
-        )
+        );
+        return Promise.resolve();
 
     }
     public readonly authUser = (req: Request, res: Response) => {
